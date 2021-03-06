@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render winner 1`] = `
+<div
+  className="d-flex flex-column align-items-center justify-content-center container"
+  style={
+    Object {
+      "minHeight": "100vh",
+    }
+  }
+>
+  <div
+    className="w-100"
+    style={
+      Object {
+        "maxWidth": "400px",
+      }
+    }
+  >
+    <div
+      className="card"
+    >
+      <div
+        className="card-body"
+      >
+        <div
+          className="w-200 text-center"
+        >
+          <img
+            className="logo mr-2"
+            src="/assets/win-trophy.png"
+          />
+        </div>
+        <div
+          className="w-100 m-100"
+        >
+          <h2>
+            Player 1
+             Wins!
+          </h2>
+        </div>
+        <button
+          className="w-100 mt-3 btn btn-primary"
+          disabled={false}
+          type="button"
+        >
+          Return to Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
