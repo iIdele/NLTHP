@@ -1,0 +1,16 @@
+/* General App */ 
+
+.App {
+  text-align: center;
+}
+
+/* App logo spinner (logo rotate effect) */ 
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
