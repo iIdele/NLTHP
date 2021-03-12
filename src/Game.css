@@ -233,7 +233,7 @@ img {
 	z-index: 100;
 }
 
-.p0, .p1, .p2, .p3, .p4 {
+.p0, .p1, .p2, .p3, .p4, .p5 {
 	position: absolute;
 	display: flex;
 	align-items: center;
@@ -242,28 +242,32 @@ img {
 
 .p0 {
 	bottom: 0%;
-	left: 50%;
-	transform: translateX(-50%);
+	left: 34%;
 }
 
 .p1 {
-	bottom: 0%;
-	left: 22%;
+	bottom: 3%;
+	left: 9%;
 }
 
 .p2 {
-	bottom: 33%;
+	bottom: 40%;
 	left: 0%;
 }
 
-.p4 {
-	bottom: 0%;
-	right: 22%;
+.p3 {
+	bottom: 40%;
+	right: 0%;
 }
 
-.p3 {
-	bottom: 33%;
-	right: 0%;
+.p4 {
+	bottom: 3%;
+	right: 9%;
+}
+
+.p5 {
+	bottom: 0%;
+	right: 34%;
 }
 
 .player-div {
@@ -696,13 +700,17 @@ img {
 		bottom: 40%;
 		left: 7.5%;
 	}
+	.p3 {
+		bottom: 40%;
+		right: 7.5%;
+	}
 	.p4 {
 		bottom: 16%;
 		right: 29%;
 	}
-	.p3 {
-		bottom: 40%;
-		right: 7.5%;
+	.p5 {
+		bottom: 16%;
+		right: 44.5%;
 	}
 	.title-logo {
 		margin-left: 10%;
@@ -759,24 +767,28 @@ img {
 	}
 	.p0 {
 		bottom: 27%;
-		left: 50%;
-		transform: translateX(-50%);
+		left: 39.5%;
+
 	}
 	.p1 {
 		bottom: 27%;
-		left: 29%;
+		left: 24%;
 	}
 	.p2 {
-		bottom: 45%;
+		bottom: 51.5%;
 		left: 12.5%;
+	}
+	.p3 {
+		bottom: 51.5%;
+		right: 12.5%;
 	}
 	.p4 {
 		bottom: 27%;
-		right: 29%;
+		right: 24%;
 	}
-	.p3 {
-		bottom: 45%;
-		right: 12.5%;
+	.p5 {
+		bottom: 27%;
+		right: 39.5%;
 	}
 	.title-logo {
 		margin-left: 10%;

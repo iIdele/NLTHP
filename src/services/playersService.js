@@ -17,7 +17,7 @@ const makeTable = async (playerName = "User") => {
 	const users = [{
 		id: uuid(),
 		name: playerName,
-		avatarURL: '/assets/playerIcons/blackUser.svg',
+		avatarURL: '/assets/playerIcons/greenUser.svg',
 		cards: [],
 		showDownHand: {
 			hand: [],
@@ -102,6 +102,27 @@ const makeTable = async (playerName = "User") => {
 		id: uuid(),
 		name: 'Agent 4',
 		avatarURL: '/assets/playerIcons/yellowUser.svg',
+		cards: [],
+		showDownHand: {
+			hand: [],
+			descendingSortHand: [],
+		},
+		chips: 20000,
+		roundStartChips: 20000,
+		roundEndChips: 20000,
+		currentRoundChipsInvested: 0,
+		bet: 0,
+		betReconciled: false,
+		folded: false,
+		allIn: false,
+		canRaise: true,
+		stackInvestment: 0,
+		robot: true
+	},
+	{
+		id: uuid(),
+		name: 'Agent 5',
+		avatarURL: '/assets/playerIcons/brownUser.svg',
 		cards: [],
 		showDownHand: {
 			hand: [],
