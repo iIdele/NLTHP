@@ -126,16 +126,16 @@ const Player = (props) => {
             src={avatar}
             alt="Player Avatar"
           />
-          <h5 className="player-data-name" style={{ 'fontSize': fontSize(name)}}>
+          <h4 className="player-data-name" style={{ 'fontSize': fontSize(name)}}>
             {`${name}`}
-          </h5>
+          </h4>
           <div className="player-data-stash-div">
             <img className="player-data-stash-image" src={chipCount} alt="Player Stash" />
-            <h5 className="player-data-stash-head">{`${chips}`}</h5>
+            <h4 className="player-data-stash-head">{`${chips}`}</h4>
           </div>
           <div className="player-data-bet-div">
             <img className="player-data-bet-image" src={playerBet} alt="Player Bet" />
-            <h5 className="player-data-bet-head">{`${bet}`}</h5>
+            <h4 className="player-data-bet-head">{`${bet}`}</h4>
           </div>
           {makeDealerChip()}
         </div>

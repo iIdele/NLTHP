@@ -396,15 +396,15 @@ class Game extends Component {
   renderPlayerShowdown = () => {
     return (
       <div className='showdown-div-wrapper'>
-        <h5 className="showdown-div-title">
+        <h4 className="showdown-div-title">
           Hand Complete!
-        </h5>
+        </h4>
         <div className="showdown-div-messages">
           {makeShowdownMessages(this.state.showDownMessages)}
         </div>
-        <h5 className="showdown-div-community-card-label">
+        <h4 className="showdown-div-community-card-label">
           Community Cards
-        </h5>
+        </h4>
         <div className='showdown-div-community-cards'>
           {this.renderTableCommunityCards(true)}
         </div>
@@ -516,7 +516,7 @@ class Game extends Component {
           <div className="title-logo">
             <img src={"./assets/logo.svg"} alt="App Logo"></img>
             <h3>No-Limit Texas Hold'em Poker</h3>
-            <DropdownButton id="dropdown-basic-button" title="">
+            <DropdownButton id="dropdown-basic-button" title="Menu" alt="Menu Dropdown" aria-label="Menu Dropdown">
               <Dropdown.Item href="#"> <Link to="/dashboard">Return to Dashboard</Link></Dropdown.Item>
               <Dropdown.Item href="#"> <Link to="/login">Logout</Link></Dropdown.Item>
             </DropdownButton>
@@ -528,7 +528,7 @@ class Game extends Component {
           </div>
           <div className='pot-div'>
             <img src={'./assets/pot.svg'} alt="Community Pot" />
-            <h5> {`${this.state.pot}`} </h5>
+            <h4> {`${this.state.pot}`} </h4>
           </div>
         </div>
         { (this.state.phase === 'showdown') && this.renderPlayerShowdown()}

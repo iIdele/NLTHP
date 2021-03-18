@@ -13,9 +13,9 @@ const PlayerShowdown = (props) => {
   return (
     <div className="player-div">
       <div className="player-icon-div">
-        <h5 className="player-data-name">
+        <h4 className="player-data-name">
           {`${name}`}
-        </h5>
+        </h4>
       </div>
     </div>
   )

@@ -60,7 +60,7 @@ class testGame extends Component {
           </div>
           <div className='pot-div'>
             <img src={'./assets/pot.svg'} alt="Community Pot" />
-            <h5> {`${this.state.pot}`} </h5>
+            <h4> {`${this.state.pot}`} </h4>
           </div>
         </div>
         { (this.state.phase === 'showdown') && this.renderPlayerShowdown()}
