@@ -1,14 +1,6 @@
 import React from 'react';
 import BackOfCard from '../cards/BackOfCard';
 import Card from '../cards/Card';
-import PlayerStatus from "./PlayerStatus";
-
-
-
-const dealerChipImageURL = "/assets/logo.svg";
-const chipCountImageURL = "./assets/chips.svg";
-const playerBetImageURL = "./assets/bet.svg";
-
 
 /**
  * Player component that creates the base player entity 
@@ -16,46 +8,61 @@ const playerBetImageURL = "./assets/bet.svg";
  */
 const Player = (props) => {
   const {
+    player: {
+      agent,
+      folded,
+      cards,
+      avatar,
+      name,
+      chips,
+      bet
+    },
     arrayIndex,
-    playerAnimationSwitchboard,
-    endTransition,
+    playerAnimationCase,
     hasDealerChip,
     isActive,
     phase,
     clearCards,
-    player: {
-      robot,
-      folded,
-      cards,
-      avatarURL,
-      name,
-      chips,
-      bet
-    }
   } = props;
 
+  const dealerChip = "/assets/logo.svg";
+  const chipCount = "./assets/chips.svg";
+  const playerBet = "./assets/bet.svg";
+
   /*
-     Assigns the correct format of card to players
+  Select class name depending on the value of the bool.
+  */
+  const determineName = (bool) => {
+    if (bool){
+      return ' activePlayer'
+    }
+    else {
+      return ''
+    }
+  }
+
+  /*
+  Assigns the correct format of card to players
   */
   const makePlayerCards = () => {
-    let applyFoldedClassname;
+    let setFoldedClassName;
 
     if (folded || clearCards) {
-      applyFoldedClassname = true
+      setFoldedClassName = true
     }
 
     // Hidden back of card for agents
-    if (robot) {
+    if (agent) {
       return cards.map((card, index) => {
         if (phase !== 'showdown') {
           return (
-            <BackOfCard key={index} cardData={card} applyFoldedClassname={applyFoldedClassname} />
+            <BackOfCard key={index} cardData={card} setFoldedClassName={setFoldedClassName} />
           );
         } else {
           // Reset Animation Delay
           const cardData = { ...card, animationDelay: 0 }
           return (
-            <Card key={index} cardData={cardData} applyFoldedClassname={applyFoldedClassname} />
+            <Card key={index} cardData={cardData} setFoldedClassName={setFoldedClassName} />
           );
         }
       });
@@ -64,65 +71,70 @@ const Player = (props) => {
     else {
       return cards.map((card, index) => {
         return (
-          <Card key={index} cardData={card} applyFoldedClassname={applyFoldedClassname} />
+          <Card key={index} cardData={card} setFoldedClassName={setFoldedClassName} />
         );
       });
     }
   }
 
+  /*
+  Choose font size based on length of player name.
+  */
+  const fontSize = (name) => {
+    var len = name.length
+    if (len < 14) {
+      return 12
+    }
+    else {
+      return 10
+    }
+  }
 
   /*
-     Assign dealer chip to current round dealer
+  Assign dealer chip to current round dealer
   */
   const makeDealerChip = () => {
     if (hasDealerChip) {
       return (
         <div className="dealer-chips-div">
-          <img src={dealerChipImageURL} alt="Dealer Chip" />
+          <img src={dealerChip} alt="Dealer Chip" />
         </div>
       )
     } else return null;
   }
 
   /*
-     Check if player should have animation
+  Check if player should have animation
   */
   const Animating = (playerBoxIndex) => {
-    if (playerAnimationSwitchboard[playerBoxIndex].Animating) {
+    if (playerAnimationCase[playerBoxIndex].Animating) {
       return true;
     } else {
       return false;
     }
   }
 
-
   return (
     <div className={`player-wrapper p${arrayIndex}`}>
-      <PlayerStatus
-        index={arrayIndex}
-        isActive={Animating(arrayIndex)}
-        content={playerAnimationSwitchboard[arrayIndex].content}
-        endTransition={endTransition}
-      />
       <div className='flex-row abscard'>
         {makePlayerCards()}
       </div>
       <div className="player-div">
         <div className="player-icon-div">
           <img
-            className={`player-icon-image${(isActive ? ' activePlayer' : '')}`}
-            src={avatarURL}
+            className={`player-icon-image${determineName(isActive)}`}
+            src={avatar}
             alt="Player Avatar"
           />
-          <h5 className="player-data-name" style={{ 'fontSize': (name.length < 14) ? 12 : 10 }}>
+          <h5 className="player-data-name" style={{ 'fontSize': fontSize(name)}}>
             {`${name}`}
           </h5>
           <div className="player-data-stash-div">
-            <img className="player-data-stash-image" src={chipCountImageURL} alt="Player Stash" />
+            <img className="player-data-stash-image" src={chipCount} alt="Player Stash" />
             <h5 className="player-data-stash-head">{`${chips}`}</h5>
           </div>
           <div className="player-data-bet-div">
-            <img className="player-data-bet-image" src="./assets/pot.svg" alt="Player Bet" />
+            <img className="player-data-bet-image" src={playerBet} alt="Player Bet" />
             <h5 className="player-data-bet-head">{`${bet}`}</h5>
           </div>
           {makeDealerChip()}

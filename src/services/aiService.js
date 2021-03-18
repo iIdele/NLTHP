@@ -1,7 +1,5 @@
-import {
-	calculateMinBet, manageBet,
-	managePlayerFold
-} from './betService.js';
+import { makeActionButtonText } from './uiService.js';
+import { calculateMinBet, manageBet, managePlayerFold } from './betService.js';
 import {
 	checkFrequencyHistogram,
 	checkIfFlush,
@@ -10,9 +8,6 @@ import {
 	checkIfStraightFlush,
 	generateValueSet
 } from './cardsService.js';
-import {
-	makeActionButtonText
-} from './uiService.js';
 
 /**
 * The aiService provides key services for the 
@@ -24,30 +19,35 @@ import {
 The main function to handle the behavior of an Ai player in a given situation 
 */
 const aiHandler = (state, moveAnimationState) => {
+	
 	const { highBet } = state
 	const activePlayer = state.players[state.activePlayerIndex];
 	const min = calculateMinBet(highBet, activePlayer.chips, activePlayer.bet)
 	const max = activePlayer.chips + activePlayer.bet
 	const totalInvestment = activePlayer.chips + activePlayer.bet + activePlayer.stackInvestment;
 	const investmentRequiredToRemain = (highBet / totalInvestment) * 100;
-	const descendingSortHand = activePlayer.cards.concat(state.communityCards).sort((a, b) => b.value - a.value)
-	const { frequencyHistogram, suitHistogram } = makeHistogram(descendingSortHand)
-	const stakes = groupStakes(investmentRequiredToRemain);
 	const preFlopValues = activePlayer.cards.map(el => el.value)
 	const highCard = Math.max(...preFlopValues)
 	const lowCard = Math.min(...preFlopValues)
+	const descendingSortHand = activePlayer.cards.concat(state.communityCards).sort((a, b) => b.value - a.value)
+	const { frequencyHistogram, suitHistogram } = makeHistogram(descendingSortHand)
+	const stakes = groupStakes(investmentRequiredToRemain);
+	
 	switch (state.phase) {
-
 		// determine Ai action for round 1 of betting
-		case ('betting1'): {
+		case ('first round'): {
 			// use specific factors to determine fold, call/check or bet
 			const suited = Object.entries(suitHistogram).find(keyValuePair => keyValuePair[1] === 2)
 			const straightGap = (highCard - lowCard <= 4)
-			const { callLimit, raiseChance, raiseRange } = createPreFlopDeterminant(highCard, lowCard, suited, straightGap)
-			const willCall = (betting_hierarchy[stakes] <= betting_hierarchy[callLimit])
+			const { 
+				callLimit, 
+				raiseChance, 
+				raiseRange 
+			} = createPreFlopDeterminant(highCard, lowCard, suited, straightGap)
+			const callBool = (betting_hierarchy[stakes] <= betting_hierarchy[callLimit])
 			const callValue = (activePlayer.chips + activePlayer.bet >= highBet) ? highBet : activePlayer.chips + activePlayer.bet
-			if (willCall) {
-				if (willRaise(raiseChance)) {
+			if (callBool) {
+				if (raiseBool(raiseChance)) {
 					const determinedRaiseRange = raiseRange[Math.floor(Math.random() * (raiseRange.length - 0)) + 0];
 					const wantRaise = (betting_hierarchy[stakes] <= betting_hierarchy[determinedRaiseRange])
 					if (wantRaise) {
@@ -76,9 +76,9 @@ const aiHandler = (state, moveAnimationState) => {
 			}
 		}
 		// determine Ai action for subsequent betting rounds
-		case ('betting2'):
-		case ('betting3'):
-		case ('betting4'):
+		case ('second round'):
+		case ('third round'):
+		case ('fourth round'):
 			// update freq histogram used to track hands
 			const {
 
@@ -94,9 +94,6 @@ const aiHandler = (state, moveAnimationState) => {
 			const {
 
 				isStraight,
-				isLowStraight,
-				concurrentCardValues,
-				concurrentCardValuesLow,
 
 			} = checkIfStraight(valueSet);
 			const {
@@ -110,14 +107,7 @@ const aiHandler = (state, moveAnimationState) => {
 				descendingSortHand
 					.filter(card => card.suit === flushedSuit);
 
-			const {
-
-				isStraightFlush,
-				isLowStraightFlush,
-				concurrentSFCardValues,
-				concurrentSFCardValuesLow,
-
-			} = (isFlush) && checkIfStraightFlush(flushCards);
+			const isStraightFlush = (isFlush) && checkIfStraightFlush(flushCards);
 			const isRoyalFlush = (isFlush) &&
 				checkIfRoyalFlush(flushCards);
 			const isNoPair = (
@@ -167,10 +157,10 @@ const aiHandler = (state, moveAnimationState) => {
 			// use hand hierarchy to determine Ai action
 			const highRank = handHierarchy[handHierarchy.findIndex(el => el.match === true)].name
 			const { callLimit, raiseChance, raiseRange } = createGeneralizedDeterminant(descendingSortHand, highRank, frequencyHistogramMetaData)
-			const willCall = (betting_hierarchy[stakes] <= betting_hierarchy[callLimit])
+			const callBool = (betting_hierarchy[stakes] <= betting_hierarchy[callLimit])
 			const callValue = (activePlayer.chips + activePlayer.bet >= highBet) ? highBet : activePlayer.chips + activePlayer.bet
-			if (willCall) {
-				if (willRaise(raiseChance)) {
+			if (callBool) {
+				if (raiseBool(raiseChance)) {
 					const determinedRaiseRange = raiseRange[Math.floor(Math.random() * (raiseRange.length - 0)) + 0];
 					const wantRaise = (betting_hierarchy[stakes] <= betting_hierarchy[determinedRaiseRange])
 					if (wantRaise) {
@@ -263,6 +253,10 @@ const createGeneralizedDeterminant = (hand, highRank, frequencyHistogramMetaData
 			raiseRange: ['lowdraw', 'meddraw', 'hidraw, strong'],
 		}
 	}
+}
+
+const raiseBool = (chance) => {
+	return Math.random() < chance
 }
 
 /* 
@@ -378,31 +372,13 @@ const createPreFlopDeterminant = (highCard, lowCard, suited, straightGap) => {
 	}
 }
 
-/* 
-A function to group stakes into terms for betting.
-*/
-const groupStakes = (percentage) => {
-	switch (true) {
-		case (percentage > 75):
-			return 'beware'
-		case (percentage > 40):
-			return 'aggro'
-		case (percentage > 35):
-			return 'major'
-		case (percentage > 25):
-			return 'strong'
-		case (percentage > 15):
-			return 'hidraw'
-		case (percentage > 10):
-			return 'meddraw'
-		case (percentage > 3):
-			return 'lowdraw'
-		case (percentage >= 1):
-			return 'insignificant'
-		case (percentage < 1):
-		default:
-			return 'blind'
-	}
+const makeHistogram = (hand) => {
+	const histogram = hand.reduce((acc, cur) => {
+		acc.frequencyHistogram[cur.cardFace] = (acc.frequencyHistogram[cur.cardFace] || 0) + 1;
+		acc.suitHistogram[cur.suit] = (acc.suitHistogram[cur.suit] || 0) + 1;
+		return acc
+	}, { frequencyHistogram: {}, suitHistogram: {} })
+	return histogram
 }
 
 /* 
@@ -446,18 +422,36 @@ const betting_hierarchy = {
 	beware: 8,
 }
 
-const willRaise = (chance) => {
-	return Math.random() < chance
+/* 
+A function to group stakes into terms for betting.
+*/
+const groupStakes = (percentage) => {
+	switch (true) {
+		case (percentage > 75):
+			return 'beware'
+		case (percentage > 40):
+			return 'aggro'
+		case (percentage > 35):
+			return 'major'
+		case (percentage > 25):
+			return 'strong'
+		case (percentage > 15):
+			return 'hidraw'
+		case (percentage > 10):
+			return 'meddraw'
+		case (percentage > 3):
+			return 'lowdraw'
+		case (percentage >= 1):
+			return 'insignificant'
+		case (percentage < 1):
+		default:
+			return 'blind'
+	}
 }
 
-const makeHistogram = (hand) => {
-	const histogram = hand.reduce((acc, cur) => {
-		acc.frequencyHistogram[cur.cardFace] = (acc.frequencyHistogram[cur.cardFace] || 0) + 1;
-		acc.suitHistogram[cur.suit] = (acc.suitHistogram[cur.suit] || 0) + 1;
-		return acc
-	}, { frequencyHistogram: {}, suitHistogram: {} })
-	return histogram
-}
+
+
+
 
 export { aiHandler };
 

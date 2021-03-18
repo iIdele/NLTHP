@@ -1,7 +1,6 @@
 import React from 'react';
 import { Handles, Rail, Slider, Tracks } from 'react-compound-slider';
 import Handle from "../components/raiseBar/Controller";
-import { railStyle, sliderStyle } from "../components/raiseBar/styles";
 import Track from "../components/raiseBar/Tracker";
 import {
 	calculateMinBet
@@ -11,26 +10,6 @@ import {
 * The uiService provides services to handle
 * UI animations assignments and renderings.
 */
-
-
-/* 
- Set next game phase
-*/
-const makePhaseStatement = (phase) => {
-	switch (phase) {
-		case ('loading'): return 'Finding a Table, Please Wait';
-		case ('initialDeal'): return 'Dealing out the cards';
-		case ('betting1'): return 'Betting 1';
-		case ('flop'): return 'Flop';
-		case ('betting2'): return 'Flop';
-		case ('turn'): return 'Turn';
-		case ('betting3'): return 'Turn';
-		case ('river'): return 'River';
-		case ('betting4'): return 'River';
-		case ('showdown'): return 'Show Your Cards!';
-		default: throw Error('Unfamiliar phase returned from makePhaseStatement()');
-	}
-}
 
 /* 
  Render Action Button text (Fold, Call, Raise, All in, etc.)
@@ -44,6 +23,91 @@ const makeActionButtonText = (highBet, betInputValue, activePlayer) => {
 		return 'All-in!'
 	} else if ((betInputValue > highBet)) {
 		return 'Raise'
+	}
+}
+
+/* 
+ Render User Action menu for actions and slider (for raising)
+*/
+const makeActionMenu = (highBet, players, activePlayerIndex, phase, changeSliderInputFn) => {
+	const min = calculateMinBet(highBet, players[activePlayerIndex].chips, players[activePlayerIndex].bet)
+	const max = players[activePlayerIndex].chips + players[activePlayerIndex].bet
+	return (
+		(phase === 'first round' || phase === 'second round' || phase === 'third round' || phase === 'fourth round') ? (players[activePlayerIndex].agent) ? (<h4 className="current-move-head"> {`Current Move: ${players[activePlayerIndex].name}`}</h4>) : (
+			<React.Fragment>
+				<Slider
+					domain={[min, max]}
+					values={[min]}
+					step={1}
+					onChange={changeSliderInputFn}
+					mode={2}
+				>
+					<Rail>
+						{
+							({ getRailProps }) => (
+								<div {...getRailProps()} />
+							)
+						}
+					</Rail>
+					<Handles>
+						{
+							({ handles, getHandleProps }) => (
+								<div className='slider-handles'>
+									{
+										handles.map(handle => (
+											<Handle
+												key={handle.id}
+												handle={handle}
+												getHandleProps={getHandleProps}
+											/>
+										))
+									}
+								</div>
+							)
+						}
+					</Handles>
+					<Tracks right={false}>
+						{
+							({ tracks, getTrackProps }) => (
+								<div className='slider-tracks'>
+									{
+										tracks.map(
+											({ id, source, target }) => (
+												<Track
+													key={id}
+													source={source}
+													target={target}
+													getTrackProps={getTrackProps}
+												/>
+											)
+										)
+									}
+								</div>
+							)
+						}
+					</Tracks>
+				</Slider>
+			</React.Fragment>
+		) : null
+	)
+}
+
+/* 
+ Set next game phase
+*/
+const makePhaseStatement = (phase) => {
+	switch (phase) {
+		case ('loading'): return 'Finding a Table, Please Wait';
+		case ('initialDeal'): return 'Dealing out the cards';
+		case ('first round'): return 'Betting 1';
+		case ('flop'): return 'Flop';
+		case ('second round'): return 'Flop';
+		case ('turn'): return 'Turn';
+		case ('third round'): return 'Turn';
+		case ('river'): return 'River';
+		case ('fourth round'): return 'River';
+		case ('showdown'): return 'Show Your Cards!';
+		default: throw Error('Unfamiliar phase returned from makePhaseStatement()');
 	}
 }
 
@@ -125,74 +189,6 @@ const makeShowdownMessages = (showDownMessages) => {
 			)
 		}
 	})
-}
-
-/* 
- Render User Action menu for actions and slider (for raising)
-*/
-const makeActionMenu = (highBet, players, activePlayerIndex, phase, changeSliderInputFn) => {
-	const min = calculateMinBet(highBet, players[activePlayerIndex].chips, players[activePlayerIndex].bet)
-	const max = players[activePlayerIndex].chips + players[activePlayerIndex].bet
-	return (
-		(phase === 'betting1' || phase === 'betting2' || phase === 'betting3' || phase === 'betting4') ? (players[activePlayerIndex].robot) ? (<h4 className="current-move-head"> {`Current Move: ${players[activePlayerIndex].name}`}</h4>) : (
-			<React.Fragment>
-				<Slider
-					rootStyle={sliderStyle}
-					domain={[min, max]}
-					values={[min]}
-					step={1}
-
-					onChange={changeSliderInputFn}
-					mode={2}
-				>
-					<Rail>
-						{
-							({ getRailProps }) => (
-								<div style={railStyle} {...getRailProps()} />
-							)
-						}
-					</Rail>
-					<Handles>
-						{
-							({ handles, getHandleProps }) => (
-								<div className='slider-handles'>
-									{
-										handles.map(handle => (
-											<Handle
-												key={handle.id}
-												handle={handle}
-												getHandleProps={getHandleProps}
-											/>
-										))
-									}
-								</div>
-							)
-						}
-					</Handles>
-					<Tracks right={false}>
-						{
-							({ tracks, getTrackProps }) => (
-								<div className='slider-tracks'>
-									{
-										tracks.map(
-											({ id, source, target }) => (
-												<Track
-													key={id}
-													source={source}
-													target={target}
-													getTrackProps={getTrackProps}
-												/>
-											)
-										)
-									}
-								</div>
-							)
-						}
-					</Tracks>
-				</Slider>
-			</React.Fragment>
-		) : null
-	)
 }
 
 export {

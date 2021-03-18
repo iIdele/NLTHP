@@ -8,32 +8,9 @@ import { choosePhaseStartActivePlayer, manageOverflowIndex } from './playersServ
  * the best hand, etc.
  */
 
-const totalNumCards = 52;
-const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-const suits = ['Heart', 'Spade', 'Club', 'Diamond'];
-
-// start from 2 as A (or 1) is the higest ranking card
-const VALUE_MAP = {
-	2: 1,
-	3: 2,
-	4: 3,
-	5: 4,
-	6: 5,
-	7: 6,
-	8: 7,
-	9: 8,
-	10: 9,
-	J: 10,
-	Q: 11,
-	K: 12,
-	A: 13,
-};
-
-
-
 /*
-  Generate the deck of 52 cards 
- */
+Generate the deck of 52 cards 
+*/
 const makeDeckOfCards = () => {
 	const deck = [];
 
@@ -101,7 +78,7 @@ const dealPlayerCards = (state) => {
 	if (state.players[state.activePlayerIndex].cards.length === 2) {
 		state.activePlayerIndex = manageOverflowIndex(state.blindIndex.big, 1, state.players.length, 'up');
 		// set first phase of betting
-		state.phase = 'betting1';
+		state.phase = 'first round';
 		return state;
 	}
 }
@@ -116,27 +93,26 @@ const randomStartPosition = (min, max) => {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const totalNumCards = 52;
+const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const suits = ['Heart', 'Spade', 'Club', 'Diamond'];
 
-/*
-  Get cards dealt to a player
- */
-const getCards = (deck, numToGet) => {
-	// make shallow copy of deck to not alter original deck attributes
-	const mutableDeckCopy = [...deck];
-	let chosenCards;
-	if (numToGet === 1) {
-		// get last card 
-		chosenCards = mutableDeckCopy.pop();
-	} else {
-		// get chosen cards from mutable deck copy one by one
-		chosenCards = [];
-		for (let i = 0; i < numToGet; i++) {
-			chosenCards.push(mutableDeckCopy.pop());
-		}
-	}
-	return { mutableDeckCopy, chosenCards }
+// start from 2 as A (or 1) is the higest ranking card
+const VALUE_MAP = {
+	2: 1,
+	3: 2,
+	4: 3,
+	5: 4,
+	6: 5,
+	7: 6,
+	8: 7,
+	9: 8,
+	10: 9,
+	J: 10,
+	Q: 11,
+	K: 12,
+	A: 13,
 }
-
 
 /*
   Deal flop cards
@@ -156,7 +132,7 @@ const dealFlopCards = (state) => {
 	state.deck = mutableDeckCopy;
 	state = choosePhaseStartActivePlayer(state)
 	// set second phase of betting
-	state.phase = 'betting2';
+	state.phase = 'second round';
 
 	return state;
 }
@@ -172,7 +148,7 @@ const dealTurnCards = (state) => {
 	state.deck = mutableDeckCopy;
 	state = choosePhaseStartActivePlayer(state)
 	// set third phase of betting
-	state.phase = 'betting3'
+	state.phase = 'third round'
 
 	return state
 }
@@ -189,7 +165,7 @@ const dealRiverCards = (state) => {
 	state.deck = mutableDeckCopy;
 	state = choosePhaseStartActivePlayer(state)
 	// set fourth phase of betting
-	state.phase = 'betting4'
+	state.phase = 'fourth round'
 
 	return state
 }
@@ -218,99 +194,8 @@ const dealOtherCommunityCards = (state) => {
 }
 
 /*
-  Perform player showdown at end of hand
- */
-const playerShowDown = (state) => {
-	// find players that are still in the hand
-	for (let player of state.players) {
-		const frequencyHistogram = {};
-		const suitHistogram = {};
-
-		// build each player's best hand
-		player.showDownHand.hand = player.cards.concat(state.communityCards);
-		player.showDownHand.descendingSortHand = player.showDownHand.hand.map(el => el).sort((a, b) => b.value - a.value); // This mutates showDownHand.hand in place(!!)
-
-		player.showDownHand.descendingSortHand.forEach(card => {
-			frequencyHistogram[card.cardFace] = (frequencyHistogram[card.cardFace] + 1 || 1);
-			suitHistogram[card.suit] = (suitHistogram[card.suit] + 1 || 1);
-		})
-
-		player.frequencyHistogram = frequencyHistogram;
-		player.suitHistogram = suitHistogram;
-
-		const valueSet = generateValueSet(player.showDownHand.descendingSortHand);
-
-		// check value of each player's hand
-		const { isFlush, flushedSuit } = checkIfFlush(suitHistogram);
-		const flushCards = (isFlush) && player.showDownHand.descendingSortHand.filter(card => card.suit === flushedSuit);
-		const isRoyalFlush = (isFlush) && checkIfRoyalFlush(flushCards);
-		const { isStraightFlush, isLowStraightFlush, concurrentSFCardValues, concurrentSFCardValuesLow } = (isFlush) && checkIfStraightFlush(flushCards)
-		const { isStraight, isLowStraight, concurrentCardValues, concurrentCardValuesLow } = checkIfStraight(valueSet);
-		const { isFourOfAKind, isFullHouse, isThreeOfAKind, isTwoPair, isPair, frequencyHistogramMetaData } = checkFrequencyHistogram(player.showDownHand.descendingSortHand, frequencyHistogram);
-		const isNoPair = ((!isRoyalFlush) && (!isStraightFlush) && (!isFourOfAKind) && (!isFullHouse) && (!isFlush) && (!isStraight) && (!isThreeOfAKind) && (!isTwoPair) && (!isPair))
-
-		// set value of each player's hand
-		player.showDownHand.bools = {
-			isRoyalFlush,
-			isStraightFlush,
-			isFourOfAKind,
-			isFullHouse,
-			isFlush,
-			isStraight,
-			isThreeOfAKind,
-			isTwoPair,
-			isPair,
-			isNoPair,
-		}
-
-		player.showDownHand.heldRankHierarchy = [{
-			name: 'Royal Flush',
-			match: isRoyalFlush,
-		}, {
-			name: 'Straight Flush',
-			match: isStraightFlush
-		}, {
-			name: 'Four Of A Kind',
-			match: isFourOfAKind,
-		}, {
-			name: 'Full House',
-			match: isFullHouse,
-		}, {
-			name: 'Flush',
-			match: isFlush,
-		}, {
-			name: 'Straight',
-			match: isStraight,
-		}, {
-			name: 'Three Of A Kind',
-			match: isThreeOfAKind,
-		}, {
-			name: 'Two Pair',
-			match: isTwoPair,
-		}, {
-			name: 'Pair',
-			match: isPair,
-		}, {
-			name: 'No Pair',
-			match: isNoPair
-		}];
-
-		player.metaData = frequencyHistogramMetaData
-
-		// get best hand between players in showdown
-		const highRankPosition = player.showDownHand.heldRankHierarchy.findIndex(el => el.match === true);
-		player.showDownHand.bestHandRank = player.showDownHand.heldRankHierarchy[highRankPosition].name;
-		player.showDownHand.bestHand = findBestHand(player.showDownHand.descendingSortHand, player.showDownHand.bestHandRank, flushedSuit, flushCards, concurrentCardValues, concurrentCardValuesLow, isLowStraight, isLowStraightFlush, concurrentSFCardValues, concurrentSFCardValuesLow, frequencyHistogramMetaData)
-
-	}
-
-	return assignSidePots(state)
-
-}
-
-/*
-  Get cards of players that are part of showdown
- */
+Get cards of players that are part of showdown
+*/
 const getShowdownCards = (deck, numToPop) => {
 	// make shallow copy of deck to not alter original deck attributes
 	const mutableDeckCopy = [...deck];
@@ -476,6 +361,47 @@ const findBestHand = (hand, bestRank, flushedSuit, flushCards, concurrentCardVal
 		default: throw Error('Recieved unfamiliar rank argument in findBestHand()');
 	}
 }
+/*
+Rank hands of players still active in hand
+*/
+const rankPlayersHands = (state, contestants) => {
+
+	// map of possible hand rankings
+	const rankMap = new Map([
+		['Royal Flush', []],
+		['Straight Flush', []],
+		['Four Of A Kind', []],
+		['Full House', []],
+		['Flush', []],
+		['Straight', []],
+		['Three Of A Kind', []],
+		['Two Pair', []],
+		['Pair', []],
+		['No Pair', []]
+	]);
+
+	for (let contestant of contestants) {
+		const playerIndex = state.players.findIndex(player => player.name === contestant);
+		const player = state.players[playerIndex];
+		// if player is active in hand
+		if (!player.folded) {
+			// rank player hand
+			rankMap.get(player.showDownHand.bestHandRank).push({
+				name: player.name,
+				playerIndex,
+				bestHand: player.showDownHand.bestHand,
+			});
+		}
+	}
+	return rankMap;
+}
+
+/*
+Generate set of five cards that add value to hand
+*/
+const generateValueSet = (hand) => {
+	return Array.from(new Set(hand.map(cardInfo => cardInfo.value)))
+}
 
 /*
   Determine ranking order of players' hands
@@ -615,40 +541,7 @@ const buildPlayerRankings = (state) => {
 	return hierarchy;
 }
 
-/*
-  Rank hands of players still active in hand
- */
-const rankPlayersHands = (state, contestants) => {
 
-	// map of possible hand rankings
-	const rankMap = new Map([
-		['Royal Flush', []],
-		['Straight Flush', []],
-		['Four Of A Kind', []],
-		['Full House', []],
-		['Flush', []],
-		['Straight', []],
-		['Three Of A Kind', []],
-		['Two Pair', []],
-		['Pair', []],
-		['No Pair', []]
-	]);
-
-	for (let contestant of contestants) {
-		const playerIndex = state.players.findIndex(player => player.name === contestant);
-		const player = state.players[playerIndex];
-		// if player is active in hand
-		if (!player.folded) {
-			// rank player hand
-			rankMap.get(player.showDownHand.bestHandRank).push({
-				name: player.name,
-				playerIndex,
-				bestHand: player.showDownHand.bestHand,
-			});
-		}
-	}
-	return rankMap;
-}
 
 /*
   Handle and get snapshot with winners and losers of hand
@@ -658,6 +551,26 @@ const handleSnapshotFrame = (frame) => {
 	const winningFrame = frame.filter(snapshot => snapshot.card.value === highValue);
 	const losingFrame = frame.filter(snapshot => snapshot.card.value < highValue);
 	return { winningFrame, losingFrame }
+}
+
+/*
+Get cards dealt to a player
+*/
+const getCards = (deck, numToGet) => {
+	// make shallow copy of deck to not alter original deck attributes
+	const mutableDeckCopy = [...deck];
+	let chosenCards;
+	if (numToGet === 1) {
+		// get last card 
+		chosenCards = mutableDeckCopy.pop();
+	} else {
+		// get chosen cards from mutable deck copy one by one
+		chosenCards = [];
+		for (let i = 0; i < numToGet; i++) {
+			chosenCards.push(mutableDeckCopy.pop());
+		}
+	}
+	return { mutableDeckCopy, chosenCards }
 }
 
 /*
@@ -1008,6 +921,50 @@ const checkIfFlush = (suitHistogram) => {
 		flushedSuit: null,
 	}
 }
+/*
+  Check if hand is straight with Ace, two, three, four, five
+ */
+const checkIfLowerStraight = (valueSetCopy) => {
+	let numConcurrentCards = 0;
+	let concurrentCardValuesLow = [];
+	// Convert Ace which has highest value of 13 to lowest value 0 from which straight would start
+	valueSetCopy[0] = 0;
+	// sort card values
+	const sortedValueSetCopy = valueSetCopy.map(el => el).sort((a, b) => a - b);
+	// check if Ace, two, three, four, five are found
+	for (let i = 1; i < 5; i++) {
+		if (numConcurrentCards >= 5) {
+			return {
+				isLowStraight: true,
+				concurrentCardValuesLow,
+			}
+		}
+		if ((sortedValueSetCopy[i] - sortedValueSetCopy[i - 1]) === 1) {
+			if (numConcurrentCards === 0) {
+				numConcurrentCards = 2;
+				concurrentCardValuesLow.push(sortedValueSetCopy[i - 1]);
+				concurrentCardValuesLow.push(sortedValueSetCopy[i]);
+			} else {
+				numConcurrentCards++;
+				concurrentCardValuesLow.push(sortedValueSetCopy[i]);
+			}
+		} else {
+			numConcurrentCards = 0;
+			concurrentCardValuesLow = [];
+		}
+	}
+	if (numConcurrentCards >= 5) {
+		return {
+			isLowStraight: true,
+			concurrentCardValuesLow,
+		}
+	} else {
+		return {
+			isLowStraight: false,
+			concurrentCardValuesLow,
+		}
+	}
+}
 
 /*
   Check if hand is a Royal Flush
@@ -1095,6 +1052,97 @@ const checkIfStraightFlush = (flushMatchCards) => {
 }
 
 /*
+  Perform player showdown at end of hand
+ */
+  const playerShowDown = (state) => {
+	// find players that are still in the hand
+	for (let player of state.players) {
+		const frequencyHistogram = {};
+		const suitHistogram = {};
+
+		// build each player's best hand
+		player.showDownHand.hand = player.cards.concat(state.communityCards);
+		player.showDownHand.descendingSortHand = player.showDownHand.hand.map(el => el).sort((a, b) => b.value - a.value); // This mutates showDownHand.hand in place(!!)
+
+		player.showDownHand.descendingSortHand.forEach(card => {
+			frequencyHistogram[card.cardFace] = (frequencyHistogram[card.cardFace] + 1 || 1);
+			suitHistogram[card.suit] = (suitHistogram[card.suit] + 1 || 1);
+		})
+
+		player.frequencyHistogram = frequencyHistogram;
+		player.suitHistogram = suitHistogram;
+
+		const valueSet = generateValueSet(player.showDownHand.descendingSortHand);
+
+		// check value of each player's hand
+		const { isFlush, flushedSuit } = checkIfFlush(suitHistogram);
+		const flushCards = (isFlush) && player.showDownHand.descendingSortHand.filter(card => card.suit === flushedSuit);
+		const isRoyalFlush = (isFlush) && checkIfRoyalFlush(flushCards);
+		const { isStraightFlush, isLowStraightFlush, concurrentSFCardValues, concurrentSFCardValuesLow } = (isFlush) && checkIfStraightFlush(flushCards)
+		const { isStraight, isLowStraight, concurrentCardValues, concurrentCardValuesLow } = checkIfStraight(valueSet);
+		const { isFourOfAKind, isFullHouse, isThreeOfAKind, isTwoPair, isPair, frequencyHistogramMetaData } = checkFrequencyHistogram(player.showDownHand.descendingSortHand, frequencyHistogram);
+		const isNoPair = ((!isRoyalFlush) && (!isStraightFlush) && (!isFourOfAKind) && (!isFullHouse) && (!isFlush) && (!isStraight) && (!isThreeOfAKind) && (!isTwoPair) && (!isPair))
+
+		// set value of each player's hand
+		player.showDownHand.bools = {
+			isRoyalFlush,
+			isStraightFlush,
+			isFourOfAKind,
+			isFullHouse,
+			isFlush,
+			isStraight,
+			isThreeOfAKind,
+			isTwoPair,
+			isPair,
+			isNoPair,
+		}
+
+		player.showDownHand.heldRankHierarchy = [{
+			name: 'Royal Flush',
+			match: isRoyalFlush,
+		}, {
+			name: 'Straight Flush',
+			match: isStraightFlush
+		}, {
+			name: 'Four Of A Kind',
+			match: isFourOfAKind,
+		}, {
+			name: 'Full House',
+			match: isFullHouse,
+		}, {
+			name: 'Flush',
+			match: isFlush,
+		}, {
+			name: 'Straight',
+			match: isStraight,
+		}, {
+			name: 'Three Of A Kind',
+			match: isThreeOfAKind,
+		}, {
+			name: 'Two Pair',
+			match: isTwoPair,
+		}, {
+			name: 'Pair',
+			match: isPair,
+		}, {
+			name: 'No Pair',
+			match: isNoPair
+		}];
+
+		player.metaData = frequencyHistogramMetaData
+
+		// get best hand between players in showdown
+		const highRankPosition = player.showDownHand.heldRankHierarchy.findIndex(el => el.match === true);
+		player.showDownHand.bestHandRank = player.showDownHand.heldRankHierarchy[highRankPosition].name;
+		player.showDownHand.bestHand = findBestHand(player.showDownHand.descendingSortHand, player.showDownHand.bestHandRank, flushedSuit, flushCards, concurrentCardValues, concurrentCardValuesLow, isLowStraight, isLowStraightFlush, concurrentSFCardValues, concurrentSFCardValuesLow, frequencyHistogramMetaData)
+
+	}
+
+	return assignSidePots(state)
+
+}
+
+/*
   Check how many hand rankings have occured and with what frequence 
   and order
  */
@@ -1167,57 +1215,7 @@ const checkFrequencyHistogram = (hand, frequencyHistogram) => {
 
 }
 
-/*
-  Check if hand is straight with Ace, two, three, four, five
- */
-const checkIfLowerStraight = (valueSetCopy) => {
-	let numConcurrentCards = 0;
-	let concurrentCardValuesLow = [];
-	// Convert Ace which has highest value of 13 to lowest value 0 from which straight would start
-	valueSetCopy[0] = 0;
-	// sort card values
-	const sortedValueSetCopy = valueSetCopy.map(el => el).sort((a, b) => a - b);
-	// check if Ace, two, three, four, five are found
-	for (let i = 1; i < 5; i++) {
-		if (numConcurrentCards >= 5) {
-			return {
-				isLowStraight: true,
-				concurrentCardValuesLow,
-			}
-		}
-		if ((sortedValueSetCopy[i] - sortedValueSetCopy[i - 1]) === 1) {
-			if (numConcurrentCards === 0) {
-				numConcurrentCards = 2;
-				concurrentCardValuesLow.push(sortedValueSetCopy[i - 1]);
-				concurrentCardValuesLow.push(sortedValueSetCopy[i]);
-			} else {
-				numConcurrentCards++;
-				concurrentCardValuesLow.push(sortedValueSetCopy[i]);
-			}
-		} else {
-			numConcurrentCards = 0;
-			concurrentCardValuesLow = [];
-		}
-	}
-	if (numConcurrentCards >= 5) {
-		return {
-			isLowStraight: true,
-			concurrentCardValuesLow,
-		}
-	} else {
-		return {
-			isLowStraight: false,
-			concurrentCardValuesLow,
-		}
-	}
-}
 
-/*
-  Generate set of five cards that add value to hand
- */
-const generateValueSet = (hand) => {
-	return Array.from(new Set(hand.map(cardInfo => cardInfo.value)))
-}
 
 export { makeDeckOfCards, shuffleCards, dealPlayerCards, getCards, dealFlopCards, dealTurnCards, dealRiverCards, dealOtherCommunityCards, playerShowDown, checkIfFlush, checkIfRoyalFlush, checkIfStraightFlush, checkIfStraight, checkFrequencyHistogram, generateValueSet };
 

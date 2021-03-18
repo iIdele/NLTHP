@@ -12,9 +12,9 @@ class testGame extends Component {
     winnerFound: null,
     winner: null,
     players: null,
-    numPlayersActive: null,
-    numPlayersFolded: null,
-    numPlayersAllIn: null,
+    playersActive: null,
+    playersFolded: null,
+    playersAllIn: null,
     activePlayerIndex: null,
     dealerIndex: null,
     blindIndex: null,
@@ -29,7 +29,7 @@ class testGame extends Component {
     playerHierarchy: [],
     showDownMessages: [],
     playActionMessages: [],
-    playerAnimationSwitchboard: {
+    playerAnimationCase: {
       0: { isAnimating: false, content: null },
       1: { isAnimating: false, content: null },
       2: { isAnimating: false, content: null },
