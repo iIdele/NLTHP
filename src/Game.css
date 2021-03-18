@@ -835,3 +835,11 @@ img {
 	}
 
 }
+
+@media (max-height: 750px) {
+	.game-bar{
+		position: absolute;
+		width: 720px;
+		margin: -100px 0 0 280px;
+	}
+}

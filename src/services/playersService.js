@@ -1,4 +1,5 @@
 import uuid from 'uuid/v1';
+import Dashboard from '../components/interfaces/Dashboard';
 import { anteUpBlinds, calculateBlindIndices, managePhaseShift, remakePot } from './betService.js';
 import { dealOtherCommunityCards, dealPlayerCards, makeDeckOfCards, playerShowDown, shuffleCards } from './cardsService.js';
 
@@ -30,7 +31,7 @@ import { dealOtherCommunityCards, dealPlayerCards, makeDeckOfCards, playerShowDo
 Intialise user and agents data
 */
 const axios = require('axios')
-const makeTable = async (playerName = "User") => {
+const makeTable = async (playerName = Dashboard.username ? Dashboard.username : "User") => {
 	// a list containing both the user and the agents data
 	const users = [{
 		id: uuid(),

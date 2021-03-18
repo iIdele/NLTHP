@@ -60,7 +60,7 @@ export default function Dashboard() {
      Get username from email address
     */
     function getUsername(emailAddress) {
-        return emailAddress.substring(0, emailAddress.indexOf("@"));
+        return emailAddress.substring(0,1).toUpperCase() + emailAddress.substring(1,emailAddress.indexOf("@"));
     }
 
     return (

@@ -9,7 +9,7 @@ class Logo extends Component {
         return (
             <div className="logo-main mb-4">
                 <span className="navbar-brand">
-                    <span ><img className="logo mr-2" src="/assets/logo.svg" /></span>
+                    <span ><img className="logo mr-2" src="/assets/logo.svg" alt="App Logo"/></span>
                     <h3 className="navbar-text">No-Limit Texas Hold'em Poker</h3>
                 </span>
             </div>

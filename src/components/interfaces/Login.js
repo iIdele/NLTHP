@@ -70,18 +70,16 @@ export default function Login() {
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="email">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" ref={emailRef} required />
+                  <Form.Control type="email" autoComplete="email" placeholder="Email Address" aria-label="Email Address" ref={emailRef} required />
                 </Form.Group>
                 <Form.Group id="password">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" ref={passwordRef} required />
+                  <Form.Control type="password" placeholder="Password" aria-label="Password" ref={passwordRef} required />
                 </Form.Group>
-                <Button disabled={loading} className="w-100" type="submit">
+                <Button disabled={loading} className="w-100" type="submit" aria-label="Log In">
                   Log In
             </Button>
               </Form>
-              <Button disabled={loading} variant="warning" className="w-100 mt-3" onClick={handleSubmitGuest}>
+              <Button disabled={loading} variant="warning" className="w-100 mt-3" aria-label="Play as Guest" onClick={handleSubmitGuest}>
                 Play as Guest
             </Button>
               <div className="w-100 text-center mt-3">

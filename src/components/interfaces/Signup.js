@@ -53,23 +53,20 @@ export default function Signup() {
         <div className="w-100" style={{ maxWidth: "400px" }}>
           <Card>
             <Card.Body>
-              <h2 className="text-center mb-4">Sign Up</h2>
+              <h2 className="text-center mb-4">Create an Account</h2>
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="email">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" ref={emailRef} required />
+                  <Form.Control type="email" autocomplete="email" placeholder="Email Address" aria-label="Email Address" ref={emailRef} required />
                 </Form.Group>
                 <Form.Group id="password">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" ref={passwordRef} required />
+                  <Form.Control type="password" ref={passwordRef} placeholder="Password" aria-label="Password"  required />
                 </Form.Group>
                 <Form.Group id="password-confirm">
-                  <Form.Label>Password Confirmation</Form.Label>
-                  <Form.Control type="password" ref={passwordConfirmRef} required />
+                  <Form.Control type="password" placeholder="Re-Type Password" aria-label="Re-Type Password"ref={passwordConfirmRef} required />
                 </Form.Group>
-                <Button disabled={loading} className="w-100" type="submit">
-                  Sign Up
+                <Button disabled={loading} className="w-100" type="submit" aria-label="Create Accounr">
+                  Create Account
             </Button>
               </Form>
             </Card.Body>

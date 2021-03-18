@@ -27,6 +27,7 @@ exports[`render winner 1`] = `
           className="w-200 text-center"
         >
           <img
+            alt="Winner Trophy"
             className="logo mr-2"
             src="/assets/win-trophy.png"
           />

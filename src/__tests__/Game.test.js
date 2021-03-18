@@ -46,7 +46,7 @@ class testGame extends Component {
         <div className="title-text" style={{ maxWidth: "400px" }}></div>
         <div className="poker-table-div">
         <div className="title-logo">
-          <img src={"./assets/logo.svg"}></img>
+          <img src={"./assets/logo.svg"} alt="App Logo"></img>
           <h3>No-Limit Texas Hold'em Poker</h3>
           <DropdownButton id="dropdown-basic-button" title="">
             <Dropdown.Item href="#"> <Link to="/dashboard">Return to Dashboard</Link></Dropdown.Item>
@@ -59,7 +59,7 @@ class testGame extends Component {
             {this.renderTableCommunityCards()}
           </div>
           <div className='pot-div'>
-            <img src={'./assets/pot.svg'} alt="Pot Value" />
+            <img src={'./assets/pot.svg'} alt="Community Pot" />
             <h5> {`${this.state.pot}`} </h5>
           </div>
         </div>

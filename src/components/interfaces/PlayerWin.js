@@ -103,7 +103,7 @@ export default function PlayerWin(props) {
                 <Card>
                     <Card.Body>
                         <div className="w-200 text-center">
-                            <img className="logo mr-2" src="/assets/win-trophy.png" />
+                            <img className="logo mr-2" src="/assets/win-trophy.png" alt="Winner Trophy"/>
                         </div>
                         <div className="w-100 m-100">
                             <h2>
