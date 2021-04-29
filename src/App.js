@@ -3,7 +3,7 @@ import 'core-js/es/map';
 import 'core-js/es/set';
 import "core-js/stable";
 import 'raf/polyfill';
-import React, { Component } from 'react';
+import React, {useState, useEffect, Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "regenerator-runtime/runtime";
 import PrivateRoute from "./components/helpers/PrivateRoute";
@@ -39,5 +39,6 @@ class App extends Component {
   }
 
 }
+
 
 export default App

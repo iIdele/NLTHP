@@ -50,7 +50,7 @@ class testGame extends Component {
           <h3>No-Limit Texas Hold'em Poker</h3>
           <DropdownButton id="dropdown-basic-button" title="">
             <Dropdown.Item href="#"> <Link to="/dashboard">Return to Dashboard</Link></Dropdown.Item>
-            <Dropdown.Item href="#"> <Link to="/login">Logout</Link></Dropdown.Item>
+            <Dropdown.Item href="#"> <Link to="/login">Log out</Link></Dropdown.Item>
           </DropdownButton>
         </div>
           <img className="poker-table-image" src={"./assets/table.svg"} alt="Poker Table" />

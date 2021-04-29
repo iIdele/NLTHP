@@ -63,7 +63,7 @@ export default function Signup() {
                   <Form.Control type="password" ref={passwordRef} placeholder="Password" aria-label="Password"  required />
                 </Form.Group>
                 <Form.Group id="password-confirm">
-                  <Form.Control type="password" placeholder="Re-Type Password" aria-label="Re-Type Password"ref={passwordConfirmRef} required />
+                  <Form.Control type="password" placeholder="Confirm Password" aria-label="Re-Type Password"ref={passwordConfirmRef} required />
                 </Form.Group>
                 <Button disabled={loading} className="w-100" type="submit" aria-label="Create Accounr">
                   Create Account

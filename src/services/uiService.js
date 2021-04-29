@@ -33,7 +33,7 @@ const makeActionMenu = (highBet, players, activePlayerIndex, phase, changeSlider
 	const min = calculateMinBet(highBet, players[activePlayerIndex].chips, players[activePlayerIndex].bet)
 	const max = players[activePlayerIndex].chips + players[activePlayerIndex].bet
 	return (
-		(phase === 'first round' || phase === 'second round' || phase === 'third round' || phase === 'fourth round') ? (players[activePlayerIndex].agent) ? (<h4 className="current-move-head"> {`Current Move: ${players[activePlayerIndex].name}`}</h4>) : (
+		(phase === 'first round' || phase === 'second round' || phase === 'third round' || phase === 'fourth round') ? (players[activePlayerIndex].agent) ? (<h4 className="current-move-head" aria-live="polite"> {`${players[activePlayerIndex].name}'s Turn`}</h4>) : (
 			<React.Fragment>
 				<Slider
 					domain={[min, max]}
@@ -52,7 +52,7 @@ const makeActionMenu = (highBet, players, activePlayerIndex, phase, changeSlider
 					<Handles>
 						{
 							({ handles, getHandleProps }) => (
-								<div className='slider-handles'>
+								<div className='slider-handles' aria-label="Betting Slider Area">
 									{
 										handles.map(handle => (
 											<Handle
@@ -134,9 +134,9 @@ const makeShowdownMessages = (showDownMessages) => {
 		if (users.length > 1) {
 			return (
 				<React.Fragment key={index}>
-					<div className="message-div">
-						<span className="message-user">
-							{`${users.length} players `}
+					<div className="message-div" >
+						<span className="message-user" >
+							{`${users.length} players `} 
 						</span>
 						<span className="message-content">
 							{`split the pot with a `}
@@ -169,7 +169,7 @@ const makeShowdownMessages = (showDownMessages) => {
 			)
 		} else if (users.length === 1) {
 			return (
-				<div key={index} className="message-div">
+				<div key={index} className="message-div" aria-label={`${users[0]} wins ${prize} chips from a pot with a ${rank}!`}>
 					<span className="message-player">
 						{`${users[0]} `}
 					</span>

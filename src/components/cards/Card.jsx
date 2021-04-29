@@ -75,7 +75,7 @@ const Card = (props) => {
       style={
         {animationDelay: `${determineStall(setFoldedClassName, animationDelay)}ms` }
         }>
-      <img src={`${process.env.PUBLIC_URL}/assets/cardFaces/${cardFace}${suitOfCard}.svg`} alt={`${matchFace(cardFace)} of ${suit}s`}></img>
+      <img src={`${process.env.PUBLIC_URL}/assets/cardFaces/${cardFace}${suitOfCard}.svg`} aria-label={`User Card: ${matchFace(cardFace)} of ${suit}s`} alt={`${matchFace(cardFace)} of ${suit}s`}></img>
     </div>
   )
 }

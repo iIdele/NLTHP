@@ -845,3 +845,174 @@ h4 {
 		margin: -100px 0 0 245px;
 	}
 }
+
+/* Responsive mobile styles (portrait) */
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: portrait) {
+
+	html {
+        /* Rotate the content container */
+        transform: rotate(90deg);
+        transform-origin: right top;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        right: 0;
+      }
+  }
+
+  /* Responsive mobile devices styles */
+@media screen and (min-width: 320px) and (max-width: 767px){
+	.poker-table-div {
+		top: 0%;
+		width: 75%;
+	}
+
+	.poker-table-image {
+		height: 50%;
+	}
+
+	.player-icon-div {
+		height: 50px;
+		width: 50px;
+	}
+
+	.player-data-name {
+		width: 50px;
+	}
+
+	.pot-div {
+		top: 21%;
+		width: 50px;
+	}
+
+	.pot-div h4 {
+		font-size: 14px;
+	}
+
+	.pot-div img {
+		height: 30px;
+		width: 30px;
+	}
+
+	.abscard {
+		top: -90%;
+	}
+
+	.poker-card {
+		width: 45px;
+		height: 55px;
+	}
+
+	.player-wrapper {
+		width: 20px;
+	}
+
+	.community-hand-div {
+		top: 12%;
+		left: 26.5%
+	}
+
+	.p0 {
+		bottom: 57%;
+		left: 33.5%;
+	}
+
+	.p1 {
+		bottom: 60%;
+		left: 2%;
+	}
+
+	.p2 {
+		bottom: 78.5%;
+		left: -5%;
+	}
+
+	.p3 {
+		bottom: 57%;
+		right: 33.5%;
+	}
+
+	.p4 {
+		bottom: 60%;
+		right: 2%;
+	}
+
+	.p5 {
+		bottom: 78.5%;
+		right: -5%;
+	}
+
+	.title-logo {
+		margin-left: 10%;
+		width: 0;
+	}
+
+	.title-logo h3 {
+		font-size: 0rem;
+	}
+
+	#dropdown-basic-button {
+		width: 200%;
+	}
+
+	.game-bar {
+		margin-bottom: 90px;
+	}
+
+	.player-data-stash-div h4 {
+		font-size: 80%
+	}
+
+	.player-data-bet-div h4 {
+		font-size: 85%
+	}
+
+	.player-data-bet-div {
+		left: 55px;
+	}
+
+	.player-data-bet-image {
+		width: 85%;
+	}
+
+	.game-bar {
+		position: absolute;
+		width: 90%;
+		height: 15%;
+		margin-bottom: -10%;
+		margin-left: 3%;
+		margin-top: -390px;
+	}
+
+	.game-buttons > button {
+		height: 30px;
+		width: 60px;
+		font-size: 15px;
+	}
+
+	.slider-handles>div>div {
+		font-size: 15px;
+	}
+
+	#dropdown-basic-button {
+
+		width: 90px;
+		font-size: 15px;
+	}
+
+	.dropdown {
+		float: none;
+		height: 1000px;
+		width: 100p0x;
+		margin-left: 160px;
+		margin-right: 0;
+		
+	}
+
+	.current-move-head {
+		font-size: 16px;
+	}
+
+  }

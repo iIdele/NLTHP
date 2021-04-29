@@ -129,13 +129,13 @@ const Player = (props) => {
           <h4 className="player-data-name" style={{ 'fontSize': fontSize(name)}}>
             {`${name}`}
           </h4>
-          <div className="player-data-stash-div">
-            <img className="player-data-stash-image" src={chipCount} alt="Player Stash" />
-            <h4 className="player-data-stash-head">{`${chips}`}</h4>
+          <div className="player-data-stash-div" aria-label={`Player Stash: ${chips}`}>
+            <img className="player-data-stash-image" src={chipCount} alt="Player Stash" aria-label={`Player Stash: ${chips}`} />
+            <h4 className="player-data-stash-head" aria-label={`Player Stash: ${chips}`}>{`${chips}`}</h4>
           </div>
           <div className="player-data-bet-div">
-            <img className="player-data-bet-image" src={playerBet} alt="Player Bet" />
-            <h4 className="player-data-bet-head">{`${bet}`}</h4>
+            <img className="player-data-bet-image" src={playerBet} alt="Player Ante" aria-label={`Player Ante: ${bet}`} />
+            <h4 className="player-data-bet-head" aria-label={`Player Ante: ${bet}`}>{`${bet}`} </h4>
           </div>
           {makeDealerChip()}
         </div>

@@ -16,7 +16,7 @@ const BackOfCard = (props) => {
 
   // display back of card (values hidden from user)
   return (
-    <div
+    <div aria-label="Agent Card: Hidden"
       key={`${suit} ${cardFace}`}
       className={`poker-card cardIn agent-card${determineName(setFoldedClassName)}`}
       style={
